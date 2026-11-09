@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledgerline</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: B2B SaaS site for small-business invoicing. Header, hero with an app window (invoice list), three-step flow, an interactive 90-day forecast with a late-payment scenario, feature grid, pricing with billing toggle, FAQ, footer. One blue brand color; green, amber and red only as invoice status. */
+:root {
+  --bg: #ffffff;
+  --alt: #f5f7fb;
+  --ink: #111a2b;
+  --muted: #566176;
+  --line: #dde3ee;
+  --brand: #1d4ed8;
+  --brand-ink: #ffffff;
+  --brand-soft: #e6edff;
+  --g-hero: linear-gradient(135deg, #e4edff 0%, #ece6ff 50%, #fde6f1 100%);
+  --g-brand: linear-gradient(135deg, #1d4ed8 0%, #6d3fe0 100%);
+  --g-band: linear-gradient(180deg, #f3f6ff 0%, #ece9fb 100%);
+  --g-cta: linear-gradient(120deg, #1536a8 0%, #4b2fcf 55%, #8a3fd6 100%);
+  --ok: #0b7a52; --ok-bg: #dff4ea;
+  --warn: #8a5a00; --warn-bg: #fdf0cf;
+  --bad: #b42318; --bad-bg: #fde4e1;
+  --font: "Manrope", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1424; --alt: #121b2f; --ink: #e8edf7; --muted: #9aa7bf; --line: #25314a;
+    --brand: #7da2ff; --brand-ink: #0a1020; --brand-soft: #1b2a4d; --g-hero: linear-gradient(135deg, #0e1a35 0%, #191638 50%, #2b1631 100%); --g-brand: linear-gradient(135deg, #6f98ff 0%, #a98bff 100%); --g-band: linear-gradient(180deg, #0f1729 0%, #171a36 100%); --g-cta: linear-gradient(120deg, #182c78 0%, #3b2a9c 55%, #6a2f9e 100%);
+    --ok: #4fd6a0; --ok-bg: #12352b; --warn: #f2c35b; --warn-bg: #3a2f12; --bad: #ff8d82; --bad-bg: #3d1b1a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1424; --alt: #121b2f; --ink: #e8edf7; --muted: #9aa7bf; --line: #25314a;
+  --brand: #7da2ff; --brand-ink: #0a1020; --brand-soft: #1b2a4d; --g-hero: linear-gradient(135deg, #0e1a35 0%, #191638 50%, #2b1631 100%); --g-brand: linear-gradient(135deg, #6f98ff 0%, #a98bff 100%); --g-band: linear-gradient(180deg, #0f1729 0%, #171a36 100%); --g-cta: linear-gradient(120deg, #182c78 0%, #3b2a9c 55%, #6a2f9e 100%);
+  --ok: #4fd6a0; --ok-bg: #12352b; --warn: #f2c35b; --warn-bg: #3a2f12; --bad: #ff8d82; --bad-bg: #3d1b1a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.6; margin: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.inner { max-width: 1080px; margin: 0 auto; }
+.band { margin-inline: calc(50% - 50vw); padding-inline: max(16px, env(safe-area-inset-left, 0px)); }
+.band.alt { background: var(--alt); border-block: 1px solid var(--line); }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+header.top { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding-block: 16px; }
+.logo { font-weight: 800; font-size: 20px; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; color: var(--ink); text-decoration: none; }
+.logo svg { width: 22px; height: 22px; }
+nav ul { display: flex; gap: 26px; list-style: none; margin: 0; padding: 0; font-size: 15px; font-weight: 600; align-items: center; }
+nav a { color: var(--ink); text-decoration: none; }
+nav a:hover { color: var(--brand); }
+.btn { display: inline-block; font: inherit; font-weight: 700; font-size: 15px; background: var(--brand); color: var(--brand-ink); border: 1px solid var(--brand); border-radius: 8px; padding: 12px 20px; text-decoration: none; cursor: pointer; }
+.btn:hover { filter: brightness(1.08); }
+.btn.sm { padding: 8px 14px; font-size: 14px; }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.hero { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 48px; align-items: center; padding-block: 56px 72px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--brand); margin: 0 0 14px; }
+h1 { font-weight: 800; font-size: clamp(34px, 4.8vw, 52px); line-height: 1.06; letter-spacing: -0.03em; margin: 0 0 18px; text-wrap: balance; }
+.lede { font-size: 18px; color: var(--muted); margin: 0 0 28px; max-width: 46ch; }
+.cta { display: flex; gap: 10px; flex-wrap: wrap; }
+.app { border: 1px solid var(--line); border-radius: 12px; background: var(--bg); box-shadow: 0 18px 40px rgba(17,26,43,0.10); overflow: hidden; min-width: 0; }
+.app-bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--alt); }
+.app-bar i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); display: inline-block; }
+.app-bar span { margin-left: 8px; font-size: 12px; color: var(--muted); font-family: var(--mono); }
+.app-body { padding: 16px 18px 8px; }
+.app-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.app-title strong { font-size: 15px; }
+.app-title span { font-size: 12px; color: var(--muted); }
+.inv { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; align-items: center; padding: 11px 0; border-top: 1px solid var(--line); font-size: 14px; }
+.inv .who { min-width: 0; }
+.inv .who b { display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.inv .who small { color: var(--muted); font-family: var(--mono); font-size: 11.5px; }
+.inv .amt { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 13.5px; }
+.pill { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+.pill.ok { color: var(--ok); background: var(--ok-bg); }
+.pill.warn { color: var(--warn); background: var(--warn-bg); }
+.pill.bad { color: var(--bad); background: var(--bad-bg); }
+.app-foot { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 14px 18px; border-top: 1px solid var(--line); background: var(--alt); }
+.app-foot p { margin: 0; font-size: 12px; color: var(--muted); }
+.app-foot strong { font-family: var(--mono); font-size: 16px; font-weight: 500; }
+section { padding-block: 72px; }
+h2 { font-weight: 800; font-size: clamp(26px, 3.4vw, 36px); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 10px; text-wrap: balance; }
+.sub { color: var(--muted); margin: 0 0 32px; max-width: 60ch; }
+.steps { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); counter-reset: s; }
+.step { border-top: 2px solid var(--ink); padding-top: 16px; }
+.step::before { counter-increment: s; content: "Step " counter(s); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--brand); }
+.step h3 { margin: 6px 0; font-size: 19px; }
+.step p { margin: 0; color: var(--muted); }
+.fc { display: grid; grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr); gap: 40px; align-items: start; }
+.seg { display: inline-flex; flex-direction: column; gap: 8px; margin-top: 8px; width: 100%; }
+.seg button { text-align: left; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; cursor: pointer; }
+.seg button b { display: block; font-size: 15px; }
+.seg button span { font-size: 13.5px; color: var(--muted); }
+.seg button[aria-pressed="true"] { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); background: var(--brand-soft); }
+.card { border: 1px solid var(--line); border-radius: 12px; background: var(--bg); padding: 22px; min-width: 0; }
+.fc-head { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+.fc-head p { margin: 0; font-size: 13px; color: var(--muted); }
+.fc-head strong { font-family: var(--mono); font-weight: 500; font-size: 20px; font-variant-numeric: tabular-nums; }
+.flag { display: inline-block; margin-top: 4px; }
+svg.chart { display: block; width: 100%; height: auto; max-width: 100%; }
+.features { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+.feat h3 { margin: 0 0 6px; font-size: 18px; }
+.feat p { margin: 0; color: var(--muted); font-size: 15.5px; }
+.feat .ico { width: 36px; height: 36px; border-radius: 8px; background: var(--brand-soft); color: var(--brand); display: grid; place-items: center; margin-bottom: 14px; }
+.feat .ico svg { width: 20px; height: 20px; }
+.switch { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 24px; overflow: hidden; }
+.switch button { font: inherit; font-size: 14px; font-weight: 700; color: var(--muted); background: var(--bg); border: 0; padding: 9px 18px; cursor: pointer; }
+.switch button + button { border-left: 1px solid var(--line); }
+.switch button[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); }
+.plan { display: flex; flex-direction: column; gap: 12px; }
+.plan.pick { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); }
+.plan h3 { font-size: 17px; margin: 0; display: flex; justify-content: space-between; align-items: center; }
+.plan .tag { font-size: 11px; background: var(--brand); color: var(--brand-ink); border-radius: 999px; padding: 2px 9px; }
+.plan .desc { margin: 0; color: var(--muted); font-size: 14.5px; }
+.price { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.price small { font-size: 14px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+.plan ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; }
+.plan li { padding-left: 24px; position: relative; }
+.plan li::before { content: ""; position: absolute; left: 2px; top: 6px; width: 10px; height: 6px; border-left: 2px solid var(--brand); border-bottom: 2px solid var(--brand); transform: rotate(-45deg); }
+.plan .btn { margin-top: auto; text-align: center; }
+.grid3 { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); }
+details { border-bottom: 1px solid var(--line); padding-block: 16px; }
+details:first-of-type { border-top: 1px solid var(--line); }
+summary { cursor: pointer; font-weight: 700; font-size: 17px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; color: var(--brand); font-size: 22px; line-height: 1; }
+details[open] summary::after { content: "–"; }
+details p { margin: 10px 0 0; color: var(--muted); max-width: 70ch; }
+footer { border-top: 1px solid var(--line); padding-block: 44px 34px; display: grid; gap: 32px; grid-template-columns: 1.4fr 1fr 1fr 1fr; font-size: 15px; }
+footer h4 { margin: 0 0 10px; font-size: 14px; }
+footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; color: var(--muted); }
+footer p { margin: 8px 0 0; color: var(--muted); max-width: 32ch; }
+.legal { grid-column: 1 / -1; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 18px; }
+@media (max-width: 860px) {
+  .hero, .fc { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .hero { padding-block: 32px 48px; }
+  footer { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  section { padding-block: 48px; }
+  nav ul { gap: 16px; }
+}
+.btn { white-space: nowrap; }
+@media (max-width: 600px) { nav li:not(:last-child) { display: none; } }
+@media (max-width: 480px) { .inv { grid-template-columns: minmax(0, 1fr) auto; } .inv .amt { grid-column: 1; } }
+
+.hero-band { background: var(--g-hero); border-bottom: 1px solid var(--line); }
+.band.alt { background: var(--g-band); }
+.btn { background: var(--g-brand); border-color: transparent; }
+.btn.ghost { background: transparent; border-color: var(--line); }
+.grad-text { background: var(--g-brand); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.eyebrow { background: var(--g-brand); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-block; }
+.step { border-top: 3px solid transparent; border-image: var(--g-brand) 1; }
+.feat .ico { background: var(--g-brand); color: var(--brand-ink); }
+.switch button[aria-pressed="true"] { background: var(--g-brand); }
+.plan.pick { background: linear-gradient(var(--bg), var(--bg)) padding-box, var(--g-brand) border-box; border: 1px solid transparent; box-shadow: 0 14px 34px rgba(80,60,200,0.16); }
+.plan .tag { background: var(--g-brand); }
+.app { box-shadow: 0 24px 50px rgba(80,60,200,0.18); }
+.app-foot { background: linear-gradient(90deg, var(--brand-soft), var(--alt)); }
+.seg button[aria-pressed="true"] { background: linear-gradient(135deg, var(--brand-soft), var(--bg)); }
+.band.cta { background: var(--g-cta); color: #fff; }
+.cta-in { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; padding-block: 56px; }
+.cta-in h2 { color: #fff; margin: 0 0 6px; }
+.cta-in p { margin: 0; color: rgba(255,255,255,0.82); max-width: 52ch; }
+.btn.light { background: #fff; color: #2a2a9c; border-color: #fff; }
+footer { border-image: var(--g-brand) 1; border-top-width: 3px; }
+</style>
+
+<div class="band hero-band"><div class="inner">
+  <header class="top">
+    <a class="logo" href="#top"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="var(--brand)"/><path d="M6 16 L10 11 L13 14 L18 7" fill="none" stroke="var(--brand-ink)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Ledgerline</a>
+    <nav aria-label="Main"><ul><li><a href="#how">How it works</a></li><li><a href="#forecast">Forecast</a></li><li><a href="#pricing">Pricing</a></li><li><a class="btn sm" href="#pricing">Start free trial</a></li></ul></nav>
+  </header>
+
+  <div class="hero" id="top">
+    <div>
+      <p class="eyebrow">Invoicing and cash flow for small businesses</p>
+      <h1>Get paid on time and see your cash <span class="grad-text">90 days ahead.</span></h1>
+      <p class="lede">Ledgerline sends your invoices, follows up on late ones and turns your due dates into a day-by-day forecast of your bank balance.</p>
+      <div class="cta"><a class="btn" href="#pricing">Start free trial</a><a class="btn ghost" href="#forecast">Try the forecast</a></div>
+    </div>
+    <div class="app" aria-label="Example invoice list">
+      <div class="app-bar"><i></i><i></i><i></i><span>app.ledgerline.example / invoices</span></div>
+      <div class="app-body">
+        <div class="app-title"><strong>Invoices</strong><span>Sample data</span></div>
+        <div class="inv"><div class="who"><b>Mehta Interiors</b><small>INV-1042 · due 11 Nov</small></div><span class="amt">₹84,000</span><span class="pill warn">Due in 5 days</span></div>
+        <div class="inv"><div class="who"><b>Kapoor &amp; Sons</b><small>INV-1043 · due 18 Nov</small></div><span class="amt">₹1,26,500</span><span class="pill warn">Due in 12 days</span></div>
+        <div class="inv"><div class="who"><b>Blue Orchid Café</b><small>INV-1039 · due 31 Oct</small></div><span class="amt">₹32,000</span><span class="pill bad">6 days late</span></div>
+        <div class="inv"><div class="who"><b>Sharma Logistics</b><small>INV-1044 · due 26 Nov</small></div><span class="amt">₹48,000</span><span class="pill ok">Opened</span></div>
+      </div>
+      <div class="app-foot"><div><p>Expected in</p><strong>₹2.6L</strong></div><div><p>Overdue</p><strong>₹32K</strong></div><div><p>Paid this month</p><strong>₹1.8L</strong></div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="band alt">
+  <div class="inner">
+    <section id="how" aria-labelledby="h-h">
+      <h2 id="h-h">From invoice to payment in three steps</h2>
+      <p class="sub">Ledgerline handles the follow-up so you spend your time on the work you are billing for.</p>
+      <div class="steps">
+        <div class="step"><h3>Create and send</h3><p>Build an invoice from a saved client, add a payment link and send it by email or WhatsApp.</p></div>
+        <div class="step"><h3>Follow up automatically</h3><p>Reminders go out 3, 7 and 14 days after the due date, in your wording. You see when each one is opened.</p></div>
+        <div class="step"><h3>Match and reconcile</h3><p>Payments are matched to invoices from your bank feed, so month-end is a check, not a project.</p></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="inner">
+  <section id="forecast" aria-labelledby="f-h">
+    <h2 id="f-h">A forecast built from real due dates</h2>
+    <p class="sub">The line below is your projected bank balance, built from invoices due and bills going out. Switch the scenario to see what one late payment does.</p>
+    <div class="fc">
+      <div>
+        <div class="seg" role="group" aria-label="Scenario">
+          <button type="button" id="s0" aria-pressed="true"><b>Everyone pays on time</b><span>Kapoor &amp; Sons pays ₹1,26,500 on day 12.</span></button>
+          <button type="button" id="s1" aria-pressed="false"><b>Kapoor &amp; Sons pays 14 days late</b><span>The same invoice arrives on day 26.</span></button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="fc-head">
+          <div><p>Lowest balance</p><strong id="low">–</strong><br><span class="pill ok flag" id="flag">Above buffer</span></div>
+          <div><p>On day</p><strong id="lowDay">–</strong></div>
+          <div><p>Balance on day 90</p><strong id="end">–</strong></div>
+        </div>
+        <svg class="chart" id="chart" viewBox="0 0 600 260" role="img" aria-label="Step chart of projected bank balance over 90 days"></svg>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="band alt">
+  <div class="inner">
+    <section aria-labelledby="ft-h">
+      <h2 id="ft-h">What is included</h2>
+      <p class="sub">Everything a business with up to a few dozen clients needs to run billing without a spreadsheet.</p>
+      <div class="features">
+        <div class="card feat"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg></div><h3>Invoices and reminders</h3><p>Recurring invoices, GST fields, payment links and reminder schedules per client.</p></div>
+        <div class="card feat"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 15l4-5 3 3 5-6"/></svg></div><h3>Cash forecast</h3><p>Daily balance for 90 days with scenarios for late payments and one-off costs.</p></div>
+        <div class="card feat"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"/></svg></div><h3>Bank matching</h3><p>Payments are matched to invoices. Anything unclear is queued for one-click review.</p></div>
+        <div class="card feat"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 19c0-3 3-5 6-5s6 2 6 5"/><path d="M16 11a3 3 0 100-6M21 19c0-2-1.5-3.6-3.5-4.4"/></svg></div><h3>Accountant access</h3><p>Invite your accountant with read-only access and export a clean month-end pack.</p></div>
+        <div class="card feat"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></div><h3>Security</h3><p>Two-step sign-in, role permissions and an audit log of every change.</p></div>
+        <div class="card feat"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg></div><h3>Exports</h3><p>CSV and PDF exports for invoices, payments and the forecast at any time.</p></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="band cta"><div class="inner cta-in"><div><h2>Start your 14-day free trial</h2><p>Set up in about ten minutes. Import your clients, send a first invoice and see your forecast the same day.</p></div><a class="btn light" href="#top">Start free trial</a></div></div>
+
+<div class="inner">
+  <section id="pricing" aria-labelledby="p-h">
+    <h2 id="p-h">Pricing</h2>
+    <p class="sub">Every plan starts with a 14-day free trial. Pay yearly and get two months free.</p>
+    <div class="switch" role="group" aria-label="Billing period">
+      <button type="button" id="mo" aria-pressed="true">Monthly</button>
+      <button type="button" id="yr" aria-pressed="false">Yearly</button>
+    </div>
+    <div class="grid3">
+      <div class="card plan"><h3>Solo</h3><p class="desc">For freelancers and one-person studios.</p><div class="price"><span data-base="499">₹499</span> <small>/ month</small></div><ul><li>25 invoices a month</li><li>Automatic reminders</li><li>One user</li></ul><a class="btn ghost" href="#top">Start free trial</a></div>
+      <div class="card plan pick"><h3>Studio <span class="tag">Most chosen</span></h3><p class="desc">For small teams that bill every week.</p><div class="price"><span data-base="1299">₹1,299</span> <small>/ month</small></div><ul><li>Unlimited invoices</li><li>90-day cash forecast</li><li>Bank matching, five users</li></ul><a class="btn" href="#top">Start free trial</a></div>
+      <div class="card plan"><h3>Firm</h3><p class="desc">For agencies and accountants with several clients.</p><div class="price"><span data-base="3499">₹3,499</span> <small>/ month</small></div><ul><li>Multiple businesses</li><li>Accountant access</li><li>Priority support</li></ul><a class="btn ghost" href="#top">Talk to us</a></div>
+    </div>
+  </section>
+
+  <section id="faq" aria-labelledby="q-h" style="padding-top:0">
+    <h2 id="q-h">Questions</h2>
+    <p class="sub">Anything else, write to hello@ledgerline.example.</p>
+    <details open><summary>How is the forecast calculated?</summary><p>It starts from your current bank balance, adds invoices on their due dates and subtracts recurring bills and one-off costs you enter. It does not guess when clients will pay; you can shift a client's date to see the effect.</p></details>
+    <details><summary>Does Ledgerline connect to my bank?</summary><p>Yes, through bank feeds from supported Indian banks. You can also upload a statement file if your bank is not supported.</p></details>
+    <details><summary>Can I cancel at any time?</summary><p>Yes. Monthly plans stop at the end of the billing month. Yearly plans are refunded for unused full months.</p></details>
+  </section>
+
+  <footer>
+    <div><a class="logo" href="#top">Ledgerline</a><p>Invoicing and cash-flow forecasting for small businesses in India.</p></div>
+    <div><h4>Product</h4><ul><li>Invoices</li><li>Forecast</li><li>Bank matching</li></ul></div>
+    <div><h4>Company</h4><ul><li>About</li><li>Security</li><li>Contact</li></ul></div>
+    <div><h4>Legal</h4><ul><li>Terms</li><li>Privacy</li><li>Data processing</li></ul></div>
+    <div class="legal">Concept design by Vineet. Ledgerline is a fictional product made for portfolio purposes; all figures are sample data.</div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var START = 210000;
+  var EVENTS = [
+    { d: 3, a: -45000 }, { d: 5, a: 84000 }, { d: 12, a: 126500, kapoor: true }, { d: 14, a: -130000 },
+    { d: 15, a: -90000 }, { d: 20, a: 48000 }, { d: 33, a: 92000 }, { d: 33, a: -45000 },
+    { d: 38, a: 120000 }, { d: 40, a: -60000 }, { d: 45, a: -90000 }, { d: 47, a: 150000 },
+    { d: 52, a: -38000 }, { d: 58, a: 95000 }, { d: 61, a: 72000 }, { d: 63, a: -45000 },
+    { d: 68, a: 130000 }, { d: 75, a: 110000 }, { d: 75, a: -90000 }, { d: 86, a: 64000 }
+  ];
+  var BUFFER = 100000;
+  function series(late) {
+    var ev = EVENTS.map(function (e) { return { d: e.kapoor && late ? 26 : e.d, a: e.a }; });
+    var out = [], bal = START;
+    for (var day = 0; day <= 90; day++) {
+      ev.forEach(function (e) { if (e.d === day) bal += e.a; });
+      out.push(bal);
+    }
+    return out;
+  }
+  function money(v) { var s = v < 0 ? "–" : ""; v = Math.abs(v); return s + "₹" + (v >= 100000 ? (v / 100000).toFixed(2).replace(/\.?0+$/, "") + "L" : Math.round(v / 1000) + "K"); }
+  var ns = "http://www.w3.org/2000/svg", svg = document.getElementById("chart");
+  function add(n, a, t) { var e = document.createElementNS(ns, n); for (var k in a) e.setAttribute(k, a[k]); if (t) e.textContent = t; svg.appendChild(e); return e; }
+  function draw(late) {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var s = series(late), W = 600, H = 260, L = 52, R = 14, T = 14, B = 30;
+    var max = 0, min = Infinity, lowDay = 0;
+    s.forEach(function (v, i) { if (v > max) max = v; if (v < min) { min = v; lowDay = i; } });
+    var top = Math.ceil(max / 100000) * 100000, lo = Math.min(0, Math.floor(min / 100000) * 100000);
+    var x = function (i) { return L + (W - L - R) * i / 90; };
+    var y = function (v) { return T + (H - T - B) * (1 - (v - lo) / (top - lo)); };
+    var step = Math.max(100000, Math.ceil((top - lo) / 4 / 100000) * 100000);
+    for (var t = lo; t <= top; t += step) {
+      add("line", { x1: L, x2: W - R, y1: y(t), y2: y(t), stroke: "var(--line)", "stroke-width": 1 });
+      add("text", { x: L - 8, y: y(t) + 4, "text-anchor": "end", "font-size": 11, fill: "var(--muted)", "font-family": "IBM Plex Mono, monospace" }, "₹" + (t / 100000) + "L");
+    }
+    add("line", { x1: L, x2: W - R, y1: y(BUFFER), y2: y(BUFFER), stroke: "var(--bad)", "stroke-width": 1, "stroke-dasharray": "4 4" });
+    add("text", { x: W - R, y: y(BUFFER) - 5, "text-anchor": "end", "font-size": 10.5, fill: "var(--bad)", "font-family": "IBM Plex Mono, monospace" }, "₹1L buffer");
+    [0, 30, 60, 90].forEach(function (dd, i) {
+      add("text", { x: x(dd), y: H - 8, "text-anchor": i === 0 ? "start" : i === 3 ? "end" : "middle", "font-size": 11, fill: "var(--muted)", "font-family": "IBM Plex Mono, monospace" }, dd === 0 ? "Today" : "Day " + dd);
+    });
+    var d = "M" + x(0) + " " + y(s[0]);
+    for (var i = 1; i <= 90; i++) { if (s[i] !== s[i - 1]) d += " L" + x(i) + " " + y(s[i - 1]) + " L" + x(i) + " " + y(s[i]); }
+    d += " L" + x(90) + " " + y(s[90]);
+    add("path", { d: d + " L" + x(90) + " " + y(lo) + " L" + x(0) + " " + y(lo) + " Z", fill: "var(--brand)", opacity: 0.1 });
+    add("path", { d: d, fill: "none", stroke: "var(--brand)", "stroke-width": 2.5, "stroke-linejoin": "round" });
+    var below = min < BUFFER, col = below ? "var(--bad)" : "var(--brand)";
+    add("circle", { cx: x(lowDay), cy: y(min), r: 5, fill: "var(--bg)", stroke: col, "stroke-width": 2.5 });
+    var lx = x(lowDay), anchor = lowDay > 60 ? "end" : "start";
+    add("text", { x: lx + (anchor === "end" ? -9 : 9), y: y(min) + 16, "text-anchor": anchor, "font-size": 11.5, fill: col, "font-weight": 600, stroke: "var(--bg)", "stroke-width": 4, "paint-order": "stroke", "font-family": "IBM Plex Mono, monospace" }, "Low " + money(min) + " · day " + lowDay);
+    document.getElementById("low").textContent = money(min);
+    document.getElementById("lowDay").textContent = lowDay;
+    document.getElementById("end").textContent = money(s[90]);
+    var f = document.getElementById("flag");
+    f.textContent = below ? "Below ₹1L buffer" : "Above ₹1L buffer";
+    f.className = "pill flag " + (below ? "bad" : "ok");
+  }
+  var b0 = document.getElementById("s0"), b1 = document.getElementById("s1");
+  function pick(late) { b0.setAttribute("aria-pressed", String(!late)); b1.setAttribute("aria-pressed", String(late)); draw(late); }
+  b0.addEventListener("click", function () { pick(false); });
+  b1.addEventListener("click", function () { pick(true); });
+  draw(false);
+
+  var mo = document.getElementById("mo"), yr = document.getElementById("yr");
+  function bill(y) {
+    mo.setAttribute("aria-pressed", String(!y)); yr.setAttribute("aria-pressed", String(y));
+    document.querySelectorAll("[data-base]").forEach(function (s) {
+      var b = Number(s.getAttribute("data-base"));
+      s.textContent = "₹" + (y ? Math.round(b * 10 / 12) : b).toLocaleString("en-IN");
+    });
+  }
+  mo.addEventListener("click", function () { bill(false); });
+  yr.addEventListener("click", function () { bill(true); });
+})();
+</script>
